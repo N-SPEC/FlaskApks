@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Manage Positions</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+        h1, h2 {
+            color: #333;
+            margin-top: 0;
+        }
+
+        .add-position {
+            margin-bottom: 20px; /* Add space between "Add New Position" and "Existing Positions" */
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ccc;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        button {
+            padding: 5px 10px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container"> <!-- Add container class to create a box structure -->
+        <h1>Manage Positions</h1>
+        <div class="add-position"> <!-- Add class to the "Add New Position" section -->
+            <h2>Add New Position</h2>
+            <form action="{{ url_for('manage_positions') }}" method="post">
+                <label for="position_name">Position Name:</label>
+                <input type="text" id="position_name" name="position_name" required>
+                <button type="submit" name="add_position">Add Position</button>
+            </form>
+        </div>
+
+        <h2>Existing Positions</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Position Name</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for position in positions %}
+                    <tr>
+                        <td>{{ position.position_name }}</td>
+                        <td>
+                            <form action="{{ url_for('manage_positions') }}" method="post" style="display:inline;">
+                                <input type="hidden" name="position_id" value="{{ position.position_id }}">
+                                <button type="submit" name="edit_position">Edit</button>
+                                <input type="text" name="edited_position_name" value="{{ position.position_name }}">
+                            </form>
+                            <form action="{{ url_for('manage_positions') }}" method="post" style="display:inline;">
+                                <input type="hidden" name="position_id" value="{{ position.position_id }}">
+                                <button type="submit" name="delete_position">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

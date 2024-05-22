@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Manage Area Position</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        .container {
+            background-color: #fff;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        h1 {
+            color: #333;
+            margin-top: 0;
+            margin-bottom: 20px;
+            text-align: left;
+        }
+        form {
+            margin-top: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+        select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        button {
+            padding: 12px 24px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .selected-info {
+            margin-top: 20px;
+        }
+        .selected-info p {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Manage Area Position</h1>
+        <form id="areaPositionForm" action="{{ url_for('manage_area_position') }}" method="post">
+            <label for="area">Select Area:</label>
+            <select id="area" name="area_id">
+                {% for area in areas %}
+                    <option value="{{ area.area_id }}">{{ area.area_name }}</option>
+                {% endfor %}
+            </select><br>
+            <label for="position">Select Position:</label>
+            <select id="position" name="position_id">
+                {% for position in positions %}
+                    <option value="{{ position.position_id }}">{{ position.position_name }}</option>
+                {% endfor %}
+            </select><br>
+            <button type="submit">Assign Position to Area</button>
+        </form>
+        
+        <!-- Display selected area and position -->
+        <div class="selected-info" id="selected-info" style="display: none;">
+            <h2>Selected Area and Position:</h2>
+            <p><strong>Area:</strong> <span id="selected-area"></span></p>
+            <p><strong>Position:</strong> <span id="selected-position"></span></p>
+        </div>
+    </div>
+
+    <script>
+        // Get form and selected info elements
+        var areaPositionForm = document.getElementById('areaPositionForm');
+        var selectedInfo = document.getElementById('selected-info');
+
+        // Add submit event listener to the form
+        areaPositionForm.addEventListener('submit', function(event) {
+            // Prevent form submission
+            event.preventDefault();
+
+            // Get selected area and position values
+            var selectedArea = document.getElementById('area').options[document.getElementById('area').selectedIndex].text;
+            var selectedPosition = document.getElementById('position').options[document.getElementById('position').selectedIndex].text;
+
+            // Update selected info content
+            document.getElementById('selected-area').textContent = selectedArea;
+            document.getElementById('selected-position').textContent = selectedPosition;
+
+            // Display the selected info
+            selectedInfo.style.display = 'block';
+        });
+    </script>
+</body>
+</html>

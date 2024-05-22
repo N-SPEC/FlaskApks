@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Manage Areas</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+        h1, h2 {
+            margin-top: 0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        th, td {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        td:last-child {
+            white-space: nowrap;
+        }
+        button {
+            padding: 5px 10px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .add-area {
+            margin-bottom: 20px; /* Add space between "Add New Area" and "Existing Areas" */
+        }
+    </style>
+</head>
+<body>
+    <div class="container"> <!-- Add container class to create a box structure -->
+        <h1>Manage Areas</h1>
+        <div class="add-area"> <!-- Add a class to the "Add New Area" section -->
+            <h2>Add New Area</h2>
+            <form action="{{ url_for('manage_areas') }}" method="post">
+                <label for="area_name">Area Name:</label>
+                <input type="text" id="area_name" name="area_name" required>
+                <button type="submit" name="add_area">Add Area</button>
+            </form>
+        </div>
+
+        <h2>Existing Areas</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Area ID</th>
+                    <th>Area Name</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for area in areas %}
+                    <tr>
+                        <td>{{ area.area_id }}</td>
+                        <td>{{ area.area_name }}</td>
+                        <td>
+                            <form action="{{ url_for('manage_areas') }}" method="post">
+                                <input type="hidden" name="area_id" value="{{ area.area_id }}">
+                                <input type="text" name="edited_area_name" value="{{ area.area_name }}" required>
+                                <button type="submit" name="edit_area">Edit</button>
+                            </form>
+                            <form action="{{ url_for('manage_areas') }}" method="post">
+                                <input type="hidden" name="area_id" value="{{ area.area_id }}">
+                                <button type="submit" name="delete_area">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
+

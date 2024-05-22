@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Area and Position Selection</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            margin-top: 0;
+        }
+        form {
+            margin-top: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        input[type="submit"] {
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        input[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+        .selected-values {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #e9ecef;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Select Area and Position</h1>
+        <form id="selectionForm">
+            <label for="area">Select Area:</label>
+            <select id="area" name="area">
+                <option value="">Select Area</option>
+                {% for area_id, area_name in distinct_areas %}
+                    <option value="{{ area_id }}">{{ area_name }} (ID: {{ area_id }})</option>
+                {% endfor %}
+            </select>
+            <label for="position">Select Position:</label>
+            <select id="position" name="position">
+                <option value="">Select Position</option>
+            </select>
+            <input type="submit" value="Submit">
+        </form>
+        <div class="selected-values" id="selectedValues" style="display: none;">
+            <h2>Selected Values:</h2>
+            <p><strong>Area:</strong> <span id="selectedArea"></span></p>
+            <p><strong>Position:</strong> <span id="selectedPosition"></span></p>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('area').addEventListener('change', function() {
+            var areaId = this.value;
+            var positionDropdown = document.getElementById('position');
+            positionDropdown.innerHTML = '<option value="">Select Position</option>'; // Clear previous options
+            if (areaId) {
+                // Fetch positions linked to the selected area via AJAX
+                fetch('/get_positions?area_id=' + encodeURIComponent(areaId))
+                    .then(response => response.json())
+                    .then(data => {
+                        data.positions.forEach(position => {
+                            var option = document.createElement('option');
+                            option.value = position.position_id;
+                            option.textContent = position.position_name + " (ID: " + position.position_id + ")"; // Display both position_name and position_id
+                            positionDropdown.appendChild(option);
+                        });
+                    })
+                    .catch(error => console.error('Error fetching positions:', error));
+            }
+        });
+
+        document.getElementById('selectionForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent the form from submitting the traditional way
+            var selectedArea = document.getElementById('area').options[document.getElementById('area').selectedIndex].text;
+            var selectedPosition = document.getElementById('position').options[document.getElementById('position').selectedIndex].text;
+            
+            document.getElementById('selectedArea').textContent = selectedArea;
+            document.getElementById('selectedPosition').textContent = selectedPosition;
+            document.getElementById('selectedValues').style.display = 'block';
+        });
+    </script>
+</body>
+</html>
+
